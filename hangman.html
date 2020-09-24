@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hangman</title>
+    <style>
+      #game {
+        font-size: 100px;
+      }
+      span {
+        font-size: 210%;
+        padding-right: 10px;
+      }
+      input, button {
+        font-size: 200%;
+        width: 150px;
+      }
+    </style>
+</head>
+<body>
+    <h1>Welcome to Hangman</h1>
+    <h1 id="guesses">You have 10 guesses.</h1>
+    <span>Your guess:</span> <input id="inputtext">
+    <button id="guessbutton">guess</button>
+    <span>Your guesses: </span>
+    <span id="yourguess"></span>
+    <div id="game"></div>
+    <script>
+        let chances;
+let game = [];
+let word;
+let wordArr = [];
+let another;
+let won;
+ 
+const wordList = [
+    'apple', 'answer', 'anchor', 'bananna', 'berry', 'boat', 'boot', 'cape', 'cap', 'case', 'chip', 'cherry', 'cone', 'dark', 'deep', 'donkey', 'eight', 'ever', 'elephant', 'fire', 'food', 'good', 'great', 'hour', 'ink', 'jar', 'jump', 'juggle', 'kick', 'kangaroo', 'leopard', 'moon', 'night', 'opera', 'people', 'quiet', 'right', 'scissor', 'temple', 'unicorn', 'victorious', 'wink', 'xylophone', 'yelp', 'zebra'  //list game chooses from
+];
+
+//chooses a random word from the list as a string
+const random = () => {
+return wordList[Math.floor(Math.random()*wordList.length)];
+}
+//resets changes and gets a random word from the list then calls wait
+const start = () => {
+chances = 10;
+word = random();
+wordArr = word.split('');   //turns the string into an array
+const lastGuess = document.getElementById('yourguess');
+lastGuess.innerHTML = "<span></span>"
+game = [];
+for (let i = 0; i < wordArr.length; i++)     //creates/resets the gameboard for player to see how many blanks
+{
+    game[i] = '_';
+}
+document.getElementById('game').innerText = game.join(' ');    //lets page see the current game
+wait();
+}
+
+function wait () {      //waits for user input then passes that to play
+    document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('guessbutton').addEventListener('click', () => {
+    const text = document.getElementById('inputtext'); //gets input user
+    const guess = text.value.toLowerCase();
+    const lastGuess = document.getElementById('yourguess');
+    const newGuess = document.createElement('span');
+    newGuess.innerText = guess;
+    lastGuess.appendChild(newGuess);      //adds letter to list of guesses
+    play(guess);        //passes guess to play to see if its correct and add to game array
+    }
+  )
+})
+}
+
+//takes guess and checks if in array and adds to game
+function play (arg) {
+if (wordArr.includes(arg)) {
+wordArr.forEach((el, index) => {
+if (el === arg){
+game[index] = arg;    //places correct guess in game
+alert('You got a letter right!')
+          }
+        }
+      )
+    } else {
+    chances -=1;
+    alert(`Sorry, ${arg} is not in this word, you have ${chances} guesses left.`)
+  }
+document.getElementById('game').innerText = game.join(' ');    //lets page see the current game
+win();
+if (chances > 0) {
+    wait();
+    } else if (!won) {
+another = prompt(`${wordArr.join(' ')} was the word. Game Over, try again? y for yes, n for no.`)
+if (another === 'y' || another === 'Y') {
+start();
+    }
+  }
+}
+
+//checks for win conditions and starts another game
+const win = () => {
+    if (compareArrays()) {
+    chances = 0;
+    another = prompt('You won! play again? y for yes, n for no.')
+    if (another === 'y' || another === 'Y') {
+    start();
+        }
+    }
+}
+//converts arrays to string and returns boollean value
+const compareArrays = () => {
+let a = JSON.stringify(game);
+let b = JSON.stringify(wordArr);
+if (a === b){
+    won = true;
+    return won;
+  }
+}
+start();  //kicks off the game and resets values
+console.log('credits')
+console.log('Author: Michael Wilson')
+console.log('with help from: Aaron Wilson')
+
+    </script>
+</body>
+</html>
